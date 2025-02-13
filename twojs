@@ -1,0 +1,53 @@
+// server.js
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+// Initialize the Express app
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.log(err));
+
+// User model
+const User = mongoose.model('User', new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true },
+  websiteTime: { type: Object, required: true }, // Stores time spent on websites
+}));
+
+// API to save website time
+app.post('/saveWebsiteTime', async (req, res) => {
+  const { userId, websiteTime } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  user.websiteTime = websiteTime;
+  await user.save();
+  res.send('Time saved');
+});
+
+// API to get daily report
+app.get('/getDailyReport', async (req, res) => {
+  const { userId } = req.query;
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  res.json(user.websiteTime);
+});
+
+// Server port
+app.listen(5000, () => console.log('Backend running on http://localhost:5000'));
