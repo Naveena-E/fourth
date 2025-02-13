@@ -1,0 +1,21 @@
+// background.js
+
+let websiteTime = {}; // Stores time spent on websites
+
+// Track the website the user is visiting
+chrome.webNavigation.onCompleted.addListener((details) => {
+  let url = details.url;
+  let domain = new URL(url).hostname;
+
+  if (!websiteTime[domain]) {
+    websiteTime[domain] = 0; // Initialize time if it's a new website
+  }
+
+  // Start timing when the user visits a site
+  let startTime = Date.now();
+  chrome.tabs.onActivated.addListener((activeInfo) => {
+    let timeSpent = Date.now() - startTime;
+    websiteTime[domain] += timeSpent; // Add time spent to the website
+    chrome.storage.local.set({ websiteTime });
+  });
+}, { url: [{ hostContains: '.' }] });
