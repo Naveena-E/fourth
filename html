@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Productivity Tracker</title>
+  <style>
+    /* Add some basic styling */
+  </style>
+</head>
+<body>
+  <h1>Productivity Tracker</h1>
+  <button id="report">View Daily Report</button>
+  <div id="reportContent"></div>
+  
+  <script>
+    // Popup script to fetch the daily report from the local storage or backend
+    document.getElementById('report').addEventListener('click', function() {
+      chrome.storage.local.get('websiteTime', function(data) {
+        let report = data.websiteTime;
+        let reportContent = document.getElementById('reportContent');
+        reportContent.innerHTML = JSON.stringify(report, null, 2);
+      });
+    });
+  </script>
+</body>
+</html>
