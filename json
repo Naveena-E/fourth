@@ -1,0 +1,30 @@
+{
+    "manifest_version": 3,
+    "name": "Productivity Tracker",
+    "description": "Track your productivity and block distracting websites.",
+    "version": "1.0",
+    "permissions": [
+      "storage",
+      "activeTab",
+      "webNavigation",
+      "tabs"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": "icon.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ],
+    "host_permissions": [
+      "http://*/*",
+      "https://*/*"
+    ]
+  }
+  
